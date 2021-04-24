@@ -6,7 +6,7 @@
 
 ## Digesting Project
 
-⏱ 13:12:54 EDT 2021
+⏱ 13:12:54 EDT 2021 (~19m)
 
 The goal of this challenge is to write a program that will run a simple auction, while enforcing data validity.
 
@@ -82,4 +82,17 @@ After running our tests, the code will be reviewed by a developer. This is an op
 
 ## Setting up Workspace
 
-⏱ 13:31:03
+⏱ 13:43:21 (~90m)
+
+1. > Rename the appropriate template to `Dockerfile`, or create your own.
+2. Initialize a node-package: `yarn init`
+3. Add some helpful scripts
+4. Run evaluation scenario
+   - Expecting some failures:
+     - Volume mappings
+     - No start command etc.
+5. Writing safe "start" command / entry point
+
+---
+
+## Adding Tests
