@@ -5,5 +5,10 @@
   "main": "index.js",
   "repository": "https://github.com/GUSCRAWFORD/auction-challenge.git",
   "author": "Gus Crawford <crawford.gus@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "evaluation:prep":"ln -s `pwd`/path /path",
+    "evaluation:build":"docker build -t challenge .",
+    "evaluation:test":"docker run -i -v /path/to/test/config.json:/auction/config.json challenge < /path/to/test/input.json"
+  }
 }
