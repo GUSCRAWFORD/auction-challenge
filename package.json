@@ -1,0 +1,9 @@
+{
+  "name": "@guscrawford/auction-challenge",
+  "version": "0.0.1",
+  "description": "My evaluation submission for Sortable's senior engineer role.",
+  "main": "index.js",
+  "repository": "https://github.com/GUSCRAWFORD/auction-challenge.git",
+  "author": "Gus Crawford <crawford.gus@gmail.com>",
+  "license": "MIT"
+}
