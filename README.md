@@ -1,3 +1,27 @@
+# Gus' Auction Challenge Submission
+
+## Special Instructions
+
+1. [Run "Evaluation Preperation"](#evaluationprep)
+   - `sudo yarn evaluation:prep` _Symbolically links_ the **📁 path** folder in this source-control to the absolute path **/path** in your host.
+   - _or_ `sudo npm run evaluation:prep` 
+
+### `evaluation:prep`
+
+In order to execute the verbatim evaulation test line; please execute this line from your *Unix-like* host with _root privilege_ (i.e. you may need to prefix with _sudo_ `sudo ln -s `pwd`/path /path`):
+
+```bash
+ln -s `pwd`/path /
+```
+
+## Possible Issues
+
+- When running evaluation line you get output like: `docker: Error response from daemon: not a directory.` you may have run the direct line illustrated from [evaluation:prep](#evaluationprep) explanation&mdash;please use the _guarded_ script that avoids accidently re-running that line and creating an additional sym-link called _path_ inside _path_
+  
+---
+
+Original README _as provided_
+
 # Auction Coding Challenge
 
 One of the things that the Engineering team at Sortable works on is software that
