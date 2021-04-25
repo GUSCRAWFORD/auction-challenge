@@ -126,4 +126,10 @@ Green-lights remaining initial test set
 
 ---
 
+## Revision
+
+1. After re-reading and noticing output.json is not a trick; I've adjust tests and the submission fails now 🤬
+
+---
+
 ## ⏱ (~380m) ~ 6 Hours

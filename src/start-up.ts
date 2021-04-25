@@ -54,10 +54,11 @@ export class StartUp {
      */
     async run(stdin:NodeJS.ReadStream, stdout: NodeJS.WriteStream, stderr: NodeJS.WriteStream) {
         try {
-            const auctionsService = new Auctions(stdin, await this.configuration());
+            const auctionsService = new Auctions(stdin, stderr, await this.configuration());
             const auctionsToRun = await auctionsService.read();
             const processedAuctions = auctionsToRun.map(auction=>auctionsService.process(auction));
             stdout.write(JSON.stringify(processedAuctions)+'\n', e=>stderr.write(`${e?.message}\n`));
+            return processedAuctions;
         } catch (e) {
             stderr.write(e.message+'\n');
             throw e;

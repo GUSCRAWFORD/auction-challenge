@@ -1,5 +1,7 @@
 # Gus' Auction Challenge Submission
 
+## [🚧 Under Revision](#-unit-testing)
+
 ## 👟 Quick Overview
 
 1. `yarn install` or `npm i` should install some dev-dependencies and run unit-tests in the host
@@ -18,9 +20,17 @@ _Thanks for reviewing!_
 
 In order to execute the verbatim evaulation test line; please execute this line from your *Unix-like* host with _root privilege_ (i.e. you may need to prefix with _sudo_ `sudo ln -s `pwd`/path /path`):
 
+[⚠ See Possible Issues](#-possible-issues)
+
 ```bash
 ln -s `pwd`/path /
 ```
+
+## 🧪 Unit Testing
+
+⚠ The tests are currently failing
+
+`yarn test` or `npm test`
 
 ## 🧱 Possible Issues
 
