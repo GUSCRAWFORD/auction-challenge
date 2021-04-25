@@ -47,6 +47,9 @@ export class Auctions {
         const auctionsInput = await Auctions.readStream(this.stdin);
         return JSON.parse(auctionsInput);
     }
+    protected bidValue(bid:Bid) {
+        return bid.adjusted || bid.bid;
+    }
     /**
      * Find the highest valid bidder for each ad unit, after applying the adjustment factor:
      * - `-0.01` means that bids are reduced by 1%
@@ -60,21 +63,36 @@ export class Auctions {
      * @param auction 
      */
     process(auction:Auction) {
-        const highestBidders = new Map<string, Bidder>();
-        for (let _bid of auction.bids) {
-
-        }
+        const highestValueDistinctBidders :{[key:string]:Partial<Bidder&Bid>} = {};
+        const validBids = auction.bids.filter(
+            bid=>{
+                if (this.validateBid(this.sites.get(auction.site) as Site, auction.units, bid)) {
+                    const multiBidder = highestValueDistinctBidders[bid.bidder];
+                    if (
+                        !multiBidder
+                        || this.bidValue(bid) > (multiBidder.bid as number)
+                    ) {
+                        return highestValueDistinctBidders[bid.bidder] = {
+                            ...this.bidders.get(bid.bidder),
+                            bid:this.bidValue(bid)
+                        };
+                    }
+                }
+            }
+        );
+        validBids.sort((a, b)=> this.bidValue(a)<this.bidValue(b)?-1:(this.bidValue(a)>this.bidValue(b)?1:0) );
+        return validBids;
     }
     /**
      * Apply the adjustment factor:
      * - `-0.01` means that bids are reduced by 1%
      * - `0.05` would increase them by 5%.
+     * @param bid 
+     * @param bidder 
      */
-    adjust(bid:Bid) {
-        const bidder = this.bidders.get(bid.bidder);
-        if (bidder) {
-            const adjustmentFactor = 1 + bidder.adjustment;
-            bid.adjusted = bid.bid > 0 ? bid.bid * adjustmentFactor : bid.bid / adjustmentFactor;
+    adjust(bidder:Bidder, bid:Bid) {
+        if (bidder && bidder.adjustment) {
+            bid.adjusted = bid.bid + (bid.bid * bidder.adjustment);
         }
         return bid;
     }
@@ -89,14 +107,17 @@ export class Auctions {
      */
     validateBid(site:Site, addUnits:AdUnit[], bid:Bid) {
         const bidder = this.bidders.get(bid.bidder);
-        const siteMap = this.siteBidders.get(site.name);
-        if (
-            bidder
-            && siteMap
-            && siteMap.get(bidder.name)
-            && addUnits.find(a=>a===bid.unit)
-        ) {
-            return !(bid.adjusted && bid.adjusted < site.floor)
+        if (site) {
+            const siteMap = this.siteBidders.get(site.name);
+            if (
+                bidder
+                && siteMap
+                && siteMap.get(bidder.name)
+                && addUnits.find(a=>a===bid.unit)
+            ) {
+                // return !(bid.adjusted && bid.adjusted < site.floor) // Being anal..
+                return !(this.bidValue(bid) < site.floor);
+            }
         }
         return false;
     }

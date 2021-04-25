@@ -106,3 +106,13 @@ Organizes [reduced details of _Running the auctions_](#running-the-auctions) int
 ⏱ 00:33:11 (~90m)
 
 Green-lights _start-up_ and _auctions::validateBid_ tests
+
+⏱ 10:35:51 (~45m)
+
+Green-lights remaining initial test set
+
+🎯 Because of the way `ln -s` (one of the forms works) I royally mucked my docker service by creating some kind of loop of sym-links that caused it to hang on start.  I'm not counting time I took to _reinstall_ that and re-test this in it's finished context...
+
+---
+
+## Final Review
