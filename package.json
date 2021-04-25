@@ -7,9 +7,13 @@
   "author": "Gus Crawford <crawford.gus@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "evaluation:prep":"(ls /path && echo \"Symbolic link path already exists\") || (echo \"Creating symbolic link '/path' to '`pwd`/path'\" && ln -s `pwd`/path /path)",
-    "evaluation:build":"docker build -t challenge .",
-    "evaluation:test":"docker run -i -v /path/to/test/config.json:/auction/config.json challenge < /path/to/test/input.json",
-    "start":"node ./index.js"
+    "evaluation:prep": "(ls /path && echo \"Symbolic link path already exists\") || (echo \"Creating symbolic link '/path' to '`pwd`/path'\" && ln -s `pwd`/path /path)",
+    "evaluation:build": "docker build -t challenge .",
+    "evaluation:test": "docker run -i -v /path/to/test/config.json:/auction/config.json challenge < /path/to/test/input.json",
+    "start": "node ./index.js",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.4"
   }
 }
