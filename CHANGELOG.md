@@ -96,3 +96,8 @@ After running our tests, the code will be reviewed by a developer. This is an op
 ---
 
 ## Adding Tests
+
+⏱ 21:19:19 (~45m)
+
+1. Organizes [reduced details of _Running the auctions_](#running-the-auctions) into an initial set of red-light tests and separations of concern I'm seeing.
+ 
