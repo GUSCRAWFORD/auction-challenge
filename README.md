@@ -1,5 +1,13 @@
 # Gus' Auction Challenge Submission
 
+## 👟 Quick Overview
+
+1. `yarn install` or `npm i` should install some dev-dependencies and run unit-tests in the host
+2. `sudo yarn evaluation:prep` or `sudo npm run yarn evaluation:prep` (from a unix-like host OS, use appropriate _`sudo`_ elevator) **[See _Special Instructions_](#special-instructions)
+3. See _git history_ and [🕖 CHANGELOG](./CHANGELOG.md) for notes and process
+
+_Thanks for reviewing!_
+   
 ## Special Instructions
 
 1. [Run "Evaluation Preperation"](#evaluationprep)
@@ -14,9 +22,11 @@ In order to execute the verbatim evaulation test line; please execute this line 
 ln -s `pwd`/path /
 ```
 
-## Possible Issues
+## 🧱 Possible Issues
 
-- When running evaluation line you get output like: `docker: Error response from daemon: not a directory.` you may have run the direct line illustrated from [evaluation:prep](#evaluationprep) explanation&mdash;please use the _guarded_ script that avoids accidently re-running that line and creating an additional sym-link called _path_ inside _path_
+- When running evaluation line you get output like: `docker: Error response from daemon: not a directory.` you may have run the direct line illustrated from the [evaluation:prep](#evaluationprep) explanation (more than once)&mdash;please use the _guarded_ script that avoids accidently re-running that line and creating an additional sym-link called _path_ inside _path_.
+
+**This caused me to have to reinstall my docker** 😂
   
 ---
 

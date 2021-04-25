@@ -10,15 +10,16 @@
     "evaluation:prep": "(ls /path && echo \"Symbolic link path already exists\") || (echo \"Creating symbolic link '/path' to '`pwd`/path'\" && ln -s `pwd`/path /path)",
     "evaluation:build": "docker build -t challenge .",
     "evaluation:test": "docker run -i -v /path/to/test/config.json:/auction/config.json challenge < /path/to/test/input.json",
-    "start": "node ./dist",
-    "build": "tsc",
-    "prestart": "tsc",
-    "test":"jest --detectOpenHandles"
+    "start": "node ./cli",
+    "postinstall": "rimraf ./dist && tsc && jest",
+    "test": "jest --detectOpenHandles",
+    "prestart": "(ls ./dist && echo \"Skipping build\") || (echo \"Build not found...\" && tsc)"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.41",
     "jest": "^26.6.3",
+    "rimraf": "^3.0.2",
     "ts-jest": "^26.5.5",
     "typescript": "^4.2.4"
   }

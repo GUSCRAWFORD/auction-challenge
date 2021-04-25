@@ -10,7 +10,7 @@ const readFileAsync = promisify(readFile);
  */
 export class StartUp {
     static defaultConfigFile = process.env.AUCTIONS_DEFAULT_CONFIG_FILE || "config.json";
-    static defaultConfigPath = process.env.AUCTIONS_DEFAULT_CONFIG_PATH || "auctions";
+    static defaultConfigPath = process.env.AUCTIONS_DEFAULT_CONFIG_PATH || "/auction";
     static readFile = readFileAsync;
     /**
      * 
@@ -70,7 +70,7 @@ export interface StartUpConfiguration {
 }
 export class StartUpError extends Error {
     constructor(public inner?:Error, message?:StartUpErrorMessage) {
-        super(message);
+        super(message + (inner?` (${inner?.message})`:''));
         this.stack = (this.stack || '') + inner?.stack;
     }
 }

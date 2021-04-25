@@ -1,4 +1,4 @@
 node_modules
 # container executes using npm
-yarn.lock
+yarn*
 dist
