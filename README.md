@@ -3,12 +3,12 @@
 ## 👟 Quick Overview
 
 1. `yarn install` or `npm i` should install some dev-dependencies and run unit-tests in the host
-2. `sudo yarn evaluation:prep` or `sudo npm run yarn evaluation:prep` (from a unix-like host OS, use appropriate _`sudo`_ elevator) **[See _Special Instructions_](#special-instructions)
+2. `sudo yarn evaluation:prep` or `sudo npm run yarn evaluation:prep` (from a unix-like host OS, use appropriate _`sudo`_ elevator) **[See _Special Instructions_](#-special-instructions)
 3. See _git history_ and [🕖 CHANGELOG](./CHANGELOG.md) for notes and process
 
 _Thanks for reviewing!_
    
-## Special Instructions
+## 🎯 Special Instructions
 
 1. [Run "Evaluation Preperation"](#evaluationprep)
    - `sudo yarn evaluation:prep` _Symbolically links_ the **📁 path** folder in this source-control to the absolute path **/path** in your host.

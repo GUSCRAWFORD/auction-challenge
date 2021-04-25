@@ -116,3 +116,14 @@ Green-lights remaining initial test set
 ---
 
 ## Final Review
+
+⏱ 12:25:06 (~90m)
+
+1. Fixing some overall paths etc.
+2. I mucked my docker and unit-tested my way through most of this
+3. I finsihed some more practical work against the host-os
+4. Finally re-installed my docker and tested from scratch
+
+---
+
+## ⏱ (~380m) ~ 6 Hours
