@@ -91,7 +91,7 @@ export class Auctions {
      * @param bidder 
      */
     adjust(bidder:Bidder, bid:Bid) {
-        if (bidder && bidder.adjustment) {
+        if (bidder) {
             bid.adjusted = bid.bid + (bid.bid * bidder.adjustment);
         }
         return bid;
@@ -115,8 +115,7 @@ export class Auctions {
                 && siteMap.get(bidder.name)
                 && addUnits.find(a=>a===bid.unit)
             ) {
-                // return !(bid.adjusted && bid.adjusted < site.floor) // Being anal..
-                return !(this.bidValue(bid) < site.floor);
+                return !(this.bidValue(bid) < site.floor) // Being anal..
             }
         }
         return false;
@@ -148,6 +147,6 @@ export interface Bid  {
     "unit": AdUnit;
     /** i.e. `55` */
     "bid": number;
-    /** If a bid has been adjusted, that value is stored separately so the original bid can be reported */
+    /** The adjusted bid based on configuration */
     adjusted?:number;
 }
