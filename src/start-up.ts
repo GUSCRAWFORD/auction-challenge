@@ -36,10 +36,7 @@ export class StartUp {
      *    ]
      *}
      */
-    async configuration(configPath= StartUp.defaultConfigPath, configFile=StartUp.defaultConfigFile):Promise<{
-        sites:Site[],
-        bidders:Bidder[]
-    }> {
+    async configuration(configPath= StartUp.defaultConfigPath, configFile=StartUp.defaultConfigFile):Promise<StartUpConfiguration> {
         try {
             const configuration = `${await StartUp.readFile(xpath(configPath, configFile))}`;
             return JSON.parse(configuration);
@@ -48,7 +45,10 @@ export class StartUp {
         }
     }
 }
-
+export interface StartUpConfiguration {
+    sites:Site[],
+    bidders:Bidder[]
+}
 export class StartUpError extends Error {
     constructor(public inner?:Error, message?:StartUpErrorMessage) {
         super(message);

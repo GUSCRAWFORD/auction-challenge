@@ -1,3 +1,7 @@
+import { Auctions } from "./auctions";
+
+const expectedAuctions = require('../path/to/test/input.json');
+const expectedConfig =  require('../path/to/test/config.json');
 /*
 3. For each auction, you should find the highest valid bidder for each ad unit, after
 applying the adjustment factor.
@@ -17,6 +21,7 @@ reduced by 1%;
      - there are no valid bids
      - In the case of an invalid auction, just return an empty list of bids.
 */
+let auctionsService: Auctions;
 describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
 
     it('makes negative adjustments', async ()=>{
@@ -34,17 +39,67 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
         });
     });
     describe('ignores invalid bid', ()=>{
+        beforeEach(()=>auctionsService = new Auctions({} as any, expectedConfig));
         it('because bidder is not permitted on given site', async ()=>{
-            expect(false).toBe(true);
+            expect(auctionsService.validateBid(
+                {
+                    "name": "houseofcheese.com",
+                    "bidders": ["BIDD"],
+                    "floor": 32
+                },
+                ["banner"],
+                {
+                    "bidder": "AUCT",
+                    "unit": "banner",
+                    "bid": 35
+                }
+            )).toBe(false);
         });
         it('because bid is for an ad unrelated to given auction', async ()=>{
-            expect(false).toBe(true);
+            expect(auctionsService.validateBid(
+                {
+                    "name": "houseofcheese.com",
+                    "bidders": ["AUCT","BIDD"],
+                    "floor": 32
+                },
+                ["banner"],
+                {
+                    "bidder": "AUCT",
+                    "unit": "sidebar",
+                    "bid": 35
+                }
+            )).toBe(false);
         });
         it('because bidder is unknown', async ()=>{
-            expect(false).toBe(true);
+            expect(auctionsService.validateBid(
+                {
+                    "name": "houseofcheese.com",
+                    "bidders": ["AUCT","BIDD"],
+                    "floor": 32
+                },
+                ["banner"],
+                {
+                    "bidder": "JAMESBOND",
+                    "unit": "sidebar",
+                    "bid": 35
+                }
+            )).toBe(false);
         });
         it('because adjustment is less than given site floor', async ()=>{
-            expect(false).toBe(true);
+            expect(auctionsService.validateBid(
+                {
+                    "name": "houseofcheese.com",
+                    "bidders": ["AUCT","BIDD"],
+                    "floor": 32
+                },
+                ["banner"],
+                {
+                    "bidder": "AUCT",
+                    "unit": "sidebar",
+                    "bid": 35,
+                    "adjusted": 30
+                }
+            )).toBe(false);
         });
     });
     describe('returns empty list of bids for an invalid auction', ()=>{

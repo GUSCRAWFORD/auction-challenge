@@ -3,7 +3,7 @@
  * @param stdin (optionally) provide an alternate `ReadStream` (or mock for testing)
  */
 export function gulpStandardInput(stdin?:NodeJS.ReadStream) {
-    return new Promise(
+    return new Promise<string>(
         (resolve, reject)=>{
             try {
                 let streamed = '';
@@ -36,7 +36,7 @@ export interface AuctionDomainEntity {
  * }
  */
 export interface Site extends AuctionDomainEntity {
-    bidders:any[];
+    bidders:string[];
     floor: number;
 }
 /**

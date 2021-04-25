@@ -99,5 +99,10 @@ After running our tests, the code will be reviewed by a developer. This is an op
 
 ⏱ 21:19:19 (~45m)
 
-1. Organizes [reduced details of _Running the auctions_](#running-the-auctions) into an initial set of red-light tests and separations of concern I'm seeing.
- 
+Organizes [reduced details of _Running the auctions_](#running-the-auctions) into an initial set of red-light tests and separations of concern I'm seeing.
+
+**Sat Apr 24**
+
+⏱ 00:33:11 (~90m)
+
+Green-lights _start-up_ and _auctions::validateBid_ tests
