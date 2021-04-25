@@ -103,6 +103,10 @@ export class Auctions {
      *  - the bid is for an ad unit not involved in this auction
      *  - the bidder (or site) is unknown
      *  - the *adjusted* bid value is less than the site's floor
+     * - An auction is invalid if:
+     *  - the site is unrecognized
+     *  - there are no valid bids
+     *  - In the case of an invalid auction, just return an empty list of bids.
      * @param bid 
      */
     validateBid(site:Site, addUnits:AdUnit[], bid:Bid) {
@@ -120,16 +124,6 @@ export class Auctions {
         }
         return false;
     }
-    /**
-    * - An auction is invalid if:
-    *  - the site is unrecognized
-    *  - there are no valid bids
-    *  - In the case of an invalid auction, just return an empty list of bids.
-    * @param auction 
-    */
-   validate(auction:Auction) {
-
-   }
 }
 export type AdUnit = "banner"|"sidebar";
 export interface Auction  {

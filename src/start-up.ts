@@ -2,14 +2,15 @@ import { promisify } from 'util';
 import { readFile} from 'fs';
 import { join as xpath } from 'path';
 import { Bidder, Site } from '.';
+import { Auctions } from './auctions';
 const readFileAsync = promisify(readFile);
 /**
  * Implements 'startup' related routines
  * Set a mock-implementation on `StartUp.readFile` for testing to avoid file-reads
  */
 export class StartUp {
-    static defaultConfigFile = "config.json";
-    static defaultConfigPath = "auctions";
+    static defaultConfigFile = process.env.AUCTIONS_DEFAULT_CONFIG_FILE || "config.json";
+    static defaultConfigPath = process.env.AUCTIONS_DEFAULT_CONFIG_PATH || "auctions";
     static readFile = readFileAsync;
     /**
      * 
@@ -42,6 +43,24 @@ export class StartUp {
             return JSON.parse(configuration);
         } catch (e) {
             throw new StartUpError(e, StartUpErrorMessage.noConfig);
+        }
+    }
+    /**
+     * Process the auctions read from stdin
+     * - Load the configuration
+     * - Read stdin
+     * - `Auctions::process(...)`
+     * @param stdin 
+     */
+    async run(stdin:NodeJS.ReadStream, stdout: NodeJS.WriteStream, stderr: NodeJS.WriteStream) {
+        try {
+            const auctionsService = new Auctions(stdin, await this.configuration());
+            const auctionsToRun = await auctionsService.read();
+            const processedAuctions = auctionsToRun.map(auction=>auctionsService.process(auction));
+            stdout.write(JSON.stringify(processedAuctions)+'\n', e=>stderr.write(`${e?.message}\n`));
+        } catch (e) {
+            stderr.write(e.message+'\n');
+            throw e;
         }
     }
 }
