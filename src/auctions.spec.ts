@@ -25,6 +25,8 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
 
     beforeEach(()=>auctionsService = new Auctions({} as any, {write:jest.fn(out=>out)} as any, expectedConfig));
     it ('finds the highest valid bidder for each ad unit, after applying the adjustment factor.', ()=>{
+        auctionsService = new Auctions({} as any, {write:jest.fn(out=>/*out*/console.warn(out))} as any, expectedConfig)
+        
         expect(
             auctionsService.process({
                 "site": "houseofcheese.com",
@@ -49,16 +51,14 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
             })
         ).toEqual([
             {
-                "bidder": "BIDD",
-                "unit": "sidebar",
-                "bid": 60,
-                "adjusted": 60
-            },
-            {
                 "bidder": "AUCT",
                 "unit": "banner",
-                "bid": 35,
-                "adjusted":32.8125
+                "bid": 35
+            },
+            {
+                "bidder": "BIDD",
+                "unit": "sidebar",
+                "bid": 60
             },
         ]);
     });
@@ -141,15 +141,38 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
             })
         ).toEqual([
             {
+                "bidder": "AUCT",
+                "unit": "banner",
+                "bid": 35
+            },
+            {
                 "bidder": "BIDD",
                 "unit": "sidebar",
-                "bid": 60,
-                "adjusted": 60
+                "bid": 60
             }
         ]);
     });
     describe('ignores invalid bid', ()=>{
-        fit('because bidder is not permitted on given site', async ()=>{
+        it('because bidder is not permitted on given site', async ()=>{
+            auctionsService = new Auctions({} as any, {write:jest.fn(out=>out/*console.warn(out)*/)} as any, {
+                "sites": [
+                    {
+                        "name": "houseofcheese.com",
+                        "bidders": ["BIDD"],
+                        "floor": 32
+                    }
+                ],
+                "bidders": [
+                    {
+                        "name": "AUCT",
+                        "adjustment": -0.0625
+                    },
+                    {
+                        "name": "BIDD",
+                        "adjustment": 0
+                    }
+                ]
+            })
             expect(auctionsService.validateBid(
                 {
                     "name": "houseofcheese.com",
@@ -210,7 +233,6 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
             )).toBe(false);
         });
         it('because adjustment is less than given site floor', async ()=>{
-            // auctionsService = new Auctions({} as any, {write:jest.fn(out=>console.warn(out))} as any, expectedConfig)
             expect(auctionsService.validateBid(
                 {
                     "name": "houseofcheese.com",

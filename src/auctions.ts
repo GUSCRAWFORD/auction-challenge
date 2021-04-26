@@ -52,7 +52,7 @@ export class Auctions {
         return JSON.parse(auctionsInput);
     }
     /**
-     * Find the highest valid bidder for each ad unit, after applying the adjustment factor:
+     * Find the highest valid bidder **for each ad unit**, after applying the adjustment factor:
      * - `-0.01` means that bids are reduced by 1%
      * - `0.05` would increase them by 5%.
      * 
@@ -64,8 +64,12 @@ export class Auctions {
      * @param auction 
      */
     process(auction:Auction) {
-        const highestValueDistinctBidders :{[key:string]:Partial<Bidder&Bid>} = {};
-        const validBids = auction.bids.filter(
+        const highestValidBidPerAdUnit :{
+            /** Index of ad-units */
+            [key:string]:Partial<Bidder&Bid>
+            
+        } = {};
+        const validBids = auction.bids.map(
             bid=>{
                 if (
                     this.validateBid(
@@ -74,17 +78,19 @@ export class Auctions {
                         this.adjust(this.bidders[bid.bidder], bid)
                     )
                 ) {
-                    const multiBidder = highestValueDistinctBidders[bid.bidder];
+                    const highestValidBidForAdUnit = highestValidBidPerAdUnit[bid.unit];
                     if (
-                        !multiBidder
-                        || (bid as any).adjusted > (multiBidder.bid as number)
+                        !highestValidBidForAdUnit
+                        || (bid as any).adjusted > (highestValidBidForAdUnit.bid as number)
                     ) {
-                        return highestValueDistinctBidders[bid.bidder] = bid;
+                        delete bid.adjusted;
+                        highestValidBidPerAdUnit[bid.unit] = bid
+                        return bid;
                     }
                 }
             }
-        );
-        validBids.sort((a, b)=> (a as any).adjusted<(b as any).adjusted?-1:((a as any).adjusted>(b as any).adjusted?1:0) );
+        ).filter(bid=>bid);
+        validBids.sort((a, b)=> (a as any).bid<(b as any).bid?-1:((a as any).bid>(b as any).bid?1:0) );
         return validBids;
     }
     /**
