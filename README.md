@@ -18,12 +18,12 @@ _Thanks for reviewing!_
 
 ### `evaluation:prep`
 
-In order to execute the verbatim evaulation test line; please execute this line from your *Unix-like* host with _root privilege_ (i.e. you may need to prefix with _sudo_ `sudo ln -s `pwd`/path /path`):
+In order to execute the verbatim evaulation test line; please execute this line from your *Unix-like* host with _root privilege_ (i.e. you may need to prefix with _sudo ln -s \`pwd\`/path /path_):
 
 [⚠ See Possible Issues](#-possible-issues)
 
 ```bash
-ln -s `pwd`/path /
+ln -s `pwd`/path /path
 ```
 
 ## 🧪 Unit Testing
