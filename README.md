@@ -1,6 +1,6 @@
 # Gus' Auction Challenge Submission
 
-## [🚧 Under Revision](#-unit-testing)
+## -[🚧 Under Revision](#-unit-testing)- Fixed
 
 ## 👟 Quick Overview
 
@@ -28,7 +28,7 @@ ln -s `pwd`/path /
 
 ## 🧪 Unit Testing
 
-⚠ The tests are currently failing
+-⚠ The tests are currently failing- Review a way, code will not change.
 
 `yarn test` or `npm test`
 

@@ -129,7 +129,8 @@ Green-lights remaining initial test set
 ## Revision
 
 1. After re-reading and noticing output.json is not a trick; I've adjust tests and the submission fails now 🤬
+2. I (considering that the original input order of properties in the JSON form passed in may be reordered when stringifying) updated the tests to reflect a detail I missed and spent some extra time in final review (~60m)
 
 ---
 
-## ⏱ (~380m) ~ 6 Hours
+## ⏱ (~440m) ~ 7 Hours
