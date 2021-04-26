@@ -41,7 +41,8 @@ describe('Gus\'s Auction Challenge Tests', ()=>{
     stdin = new MockStandardInput([JSON.stringify(expectedAuctions)]) as any;
     
     await startUpService.run(stdin, stdout, stderr);
-    expect(actual).toBe(JSON.stringify(expectedOutput))
+
+    expect(JSON.parse(actual)).toEqual(expectedOutput)
   });
 });
 
