@@ -1,12 +1,12 @@
 # Gus' Auction Challenge Submission
 
-## ~~[🚧 Under Revision](#-unit-testing)~~ Fixed
-
 ## 👟 Quick Overview
 
-1. `yarn install` or `npm i` should install some dev-dependencies and run unit-tests in the host
-2. `sudo yarn evaluation:prep` or `sudo npm run yarn evaluation:prep` (from a unix-like host OS, use appropriate _`sudo`_ elevator) **[See _Special Instructions_](#-special-instructions)
-3. See _git history_ and [🕖 CHANGELOG](./CHANGELOG.md) for notes and process
+1. [`yarn` (`yarn install`)](#npm-i) or [`npm i`](#npm-i) should install some dev-dependencies and run unit-tests in the host _(see output from [output of `yarn`](#npm-i))_
+2. [`sudo yarn evaluation:prep`](#yarn-evaluationprep) or `sudo npm run yarn evaluation:prep` (from a unix-like host OS, use appropriate _`sudo`_ elevator) **[See _Special Instructions_](#-special-instructions) _(see output from [`yarn evaluation:prep`](#yarn-evaluationprep))_
+3. Run your test-docker build command (`docker build -t challenge .`) _(see output from [`yarn evaluation:build`](#yarn-evaluationbuild))_
+4. Run your test-docker run command (`docker run -i -v /path/to/test/config.json:/auction/config.json challenge < /path/to/test/input.json`) _(see output from [`yarn evaluation:test`](#yarn-evaluationtest))_
+5. See _git history_ and [🕖 CHANGELOG](./CHANGELOG.md) for notes and process
 
 _Thanks for reviewing!_
    
@@ -27,8 +27,6 @@ ln -s `pwd`/path /path
 ```
 
 ## 🧪 Unit Testing
-
-~~⚠ The tests are currently failing~~ Review away, code will not change.
 
 `yarn test` or `npm test`
 
@@ -132,3 +130,119 @@ for you to demonstrate your knowledge of best practices, as well as your familia
 with your chosen language, and its library ecosystem.
 
 [stdout]: https://en.wikipedia.org/wiki/Standard_streams#Standard_output_(stdout)
+
+---
+
+# 📃 Testing Log
+
+## `npm i`
+
+```sh
+gus@GUS-PC:~/test-auction-challenge$ git clone https://github.com/GUSCRAWFORD/auction-challenge.git
+Cloning into 'auction-challenge'...
+remote: Enumerating objects: 163, done.
+remote: Counting objects: 100% (128/128), done.
+remote: Compressing objects: 100% (61/61), done.
+remote: Total 163 (delta 71), reused 115 (delta 58), pack-reused 35
+Receiving objects: 100% (163/163), 37.77 KiB | 1.35 MiB/s, done.
+Resolving deltas: 100% (86/86), done.
+gus@GUS-PC:~/test-auction-challenge$ cd auction-challenge/
+gus@GUS-PC:~/test-auction-challenge/auction-challenge$ yarn
+yarn install v1.16.0
+info No lockfile found.
+[1/4] Resolving packages...
+warning jest > jest-cli > jest-config > jest-environment-jsdom > jsdom > request-promise-native@1.0.9: request-promise-native has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142
+warning jest > jest-cli > jest-config > jest-environment-jsdom > jsdom > request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+warning jest > jest-cli > jest-config > jest-environment-jsdom > jsdom > request > har-validator@5.1.5: this library is no longer supported
+warning jest > @jest/core > jest-haste-map > sane > micromatch > snapdragon > source-map-resolve > resolve-url@0.2.1: https://github.com/lydell/resolve-url#deprecated
+warning jest > @jest/core > jest-haste-map > sane > micromatch > snapdragon > source-map-resolve > urix@0.1.0: Please see https://github.com/lydell/urix#deprecated
+[2/4] Fetching packages...
+info fsevents@2.3.2: The platform "linux" is incompatible with this module.
+info "fsevents@2.3.2" is an optional dependency and failed compatibility check. Excluding it from installation.
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+
+success Saved lockfile.
+$ rimraf ./dist && tsc && jest
+ PASS  src/start-up.spec.ts
+ PASS  src/auctions.spec.ts
+ PASS  src/index.spec.ts
+  ● Console
+
+    console.info
+      [[{"bidder":"AUCT","unit":"banner","bid":35},{"bidder":"BIDD","unit":"sidebar","bid":60}]]
+
+      at Object.stdout.write.jest.fn.str (src/index.spec.ts:29:17)
+
+
+Test Suites: 3 passed, 3 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        3.317 s
+Ran all test suites.
+Done in 15.65s.
+```
+
+## `yarn evaluation:prep`
+
+```sh
+gus@GUS-PC:~/test-auction-challenge/auction-challenge$ sudo yarn evaluation:prep
+yarn run v1.16.0
+$ (ls /path && echo "Symbolic link path already exists") || (echo "Creating symbolic link '/path' to '`pwd`/path'" && ln -s `pwd`/path /path)
+ls: cannot access '/path': No such file or directory
+Creating symbolic link '/path' to '/home/gus/test-auction-challenge/auction-challenge/path'
+Done in 0.12s.
+```
+
+## `yarn evaluation:build`
+
+Should run the test command from [Evaluation](#evaluation): `docker build -t challenge .`
+
+```sh
+gus@GUS-PC:~/test-auction-challenge/auction-challenge$ yarn evaluation:build
+yarn run v1.16.0
+$ docker build -t challenge .
+[+] Building 8.0s (11/11) FINISHED
+ => [internal] load build definition from Dockerfile                                                                                                                                                                                                                       0.6s
+ => => transferring dockerfile: 38B                                                                                                                                                                                                                                        0.0s
+ => [internal] load .dockerignore                                                                                                                                                                                                                                          0.9s
+ => => transferring context: 34B                                                                                                                                                                                                                                           0.0s
+ => [internal] load metadata for docker.io/library/node:12                                                                                                                                                                                                                 2.6s
+ => [auth] library/node:pull token for registry-1.docker.io                                                                                                                                                                                                                0.0s
+ => [1/5] FROM docker.io/library/node:12@sha256:609103746810535f5a3a987a26ba4ce95d96225d28e9d6228faa5aa331980f37                                                                                                                                                           0.0s
+ => [internal] load build context                                                                                                                                                                                                                                          0.6s
+ => => transferring context: 116.09kB                                                                                                                                                                                                                                      0.2s
+ => CACHED [2/5] WORKDIR /usr/src/app                                                                                                                                                                                                                                      0.0s
+ => CACHED [3/5] COPY package.json .                                                                                                                                                                                                                                       0.0s
+ => CACHED [4/5] RUN npm install                                                                                                                                                                                                                                           0.0s
+ => [5/5] COPY . .                                                                                                                                                                                                                                                         1.2s
+ => exporting to image                                                                                                                                                                                                                                                     2.0s
+ => => exporting layers                                                                                                                                                                                                                                                    1.1s
+ => => writing image sha256:2c57a463a9d05bb8c428cf6199041645c306490e6732c1f9d986eb4ca8e31f74                                                                                                                                                                               0.1s
+ => => naming to docker.io/library/challenge                                                                                                                                                                                                                               0.1s
+
+Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
+Done in 8.78s.
+```
+
+## `yarn evaluation:test`
+
+Should run the run command from [Evaluation](#evaluation): `docker run -i -v /path/to/test/config.json:/auction/config.json challenge < /path/to/test/input.json`
+
+```sh
+gus@GUS-PC:~/test-auction-challenge/auction-challenge$ yarn evaluation:test
+yarn run v1.16.0
+$ docker run -i -v /path/to/test/config.json:/auction/config.json challenge < /path/to/test/input.json
+
+> @guscrawford/auction-challenge@0.0.1 prestart /usr/src/app
+> (ls ./dist && echo "Skipping build") || (echo "Build not found..." && tsc)
+
+ls: cannot access './dist': No such file or directory
+Build not found...
+
+> @guscrawford/auction-challenge@0.0.1 start /usr/src/app
+> node ./cli
+
+[[{"bidder":"AUCT","unit":"banner","bid":35},{"bidder":"BIDD","unit":"sidebar","bid":60}]]
+Done in 5.97s.
+```
