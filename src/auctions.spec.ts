@@ -229,7 +229,7 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
                         "adjustment": 0
                     }
                 ]
-            })
+            });
             expect(auctionsService.validateBid(
                 {
                     "name": "houseofcheese.com",
@@ -266,7 +266,7 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
                     {
                         "bidder": "AUCT",
                         "unit": "sidebar",
-                        "bid": 35
+                        "bid": 70
                     }
                 )
             )).toBe(false);
@@ -299,7 +299,7 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
                 ["banner"],
                 {
                     "bidder": "AUCT",
-                    "unit": "sidebar",
+                    "unit": "banner",
                     "bid": 35,
                     "adjusted": 30
                 }
@@ -341,7 +341,7 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
                     },
                     {
                         "bidder": "BIDD",
-                        "unit": "sidebar",
+                        "unit": "banner",
                         "bid": 1
                     }
                 )
