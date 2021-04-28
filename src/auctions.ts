@@ -27,6 +27,9 @@ import { StartUpConfiguration } from "./start-up";
  * ]
  */
 export class Auctions {
+    static warn = {
+        invalidBids:!!process.env.AUCTIONS_WARN_INVALIDBIDS
+    };
     static readStream = gulpStandardInput;
     bidders: {[key:string]:Bidder} = {};
     sites: {[key:string]:Site} = {};
@@ -66,25 +69,24 @@ export class Auctions {
     process(auction:Auction) {
         const highestValidBidPerAdUnit :{
             /** Index of ad-units */
-            [key:string]:Partial<Bidder&Bid>
-            
+            [key:string]:AdjustedBid;
         } = {};
         const validBids = auction.bids.map(
             bid=>{
+                const adjustedBid = this.adjust(this.bidders[bid.bidder], bid);
                 if (
                     this.validateBid(
                         this.sites[auction.site],
                         auction.units,
-                        this.adjust(this.bidders[bid.bidder], bid)
+                        adjustedBid
                     )
                 ) {
                     const highestValidBidForAdUnit = highestValidBidPerAdUnit[bid.unit];
                     if (
                         !highestValidBidForAdUnit
-                        || (bid as any).adjusted > (highestValidBidForAdUnit.bid as number)
+                        || adjustedBid.adjusted > adjustedBid.adjusted
                     ) {
-                        delete bid.adjusted;
-                        highestValidBidPerAdUnit[bid.unit] = bid
+                        highestValidBidPerAdUnit[bid.unit] = adjustedBid;
                         return bid;
                     }
                 }
@@ -100,13 +102,14 @@ export class Auctions {
      * @param bid 
      * @param bidder 
      */
-    adjust(bidder:Bidder, bid:Bid):Bid&{adjusted:number} {
+    adjust(bidder:Bidder, bid:Bid):AdjustedBid {
+        const adjustedBid = {...bid} as AdjustedBid;
         if (bidder) {
-            bid.adjusted = bid.bid + (bid.bid * bidder.adjustment);
+            adjustedBid.adjusted = bid.bid + (bid.bid * bidder.adjustment);
         } else {
-            bid.adjusted = bid.bid;
+            adjustedBid.adjusted = bid.bid;
         }
-        return bid as any;
+        return adjustedBid;
     }
     /**
      * `true` if _valid_ falsy otherwise
@@ -121,32 +124,41 @@ export class Auctions {
      *  - In the case of an invalid auction, just return an empty list of bids.
      * @param bid 
      */
-    validateBid(site:Site, adUnits:AdUnit[], bid:Bid&{adjusted:number}) {
+    validateBid(site:Site, adUnits:AdUnit[], adjustedBid:AdjustedBid) {
         if (site && site.name) {
             const siteMap = this.siteBidders[site.name];
             if (siteMap) {
-                const bidder = this.bidders[bid.bidder];
+                const bidder = this.bidders[adjustedBid.bidder];
                 if (bidder) {
                     if (siteMap[bidder.name]) {
-                        if (adUnits.find(a=>a===bid.unit)){
-                            const valid = bid.adjusted > site.floor;
+                        if (adUnits.find(a=>a===adjustedBid.unit)){
+                            // I think if we look in history I originally wrote this;
+                            // I went through a ruthless reform after I noticed a misinterpretation and broke my tests isolate issues
+                            // I should lose extra points for converting `! <` to `>` (`>=` is correct, thanks)
+                            const valid = !(adjustedBid.adjusted < site.floor);
                             if (!valid) {
-                                this.stderr.write(`Ignoring bid: Adjusted bid is lower than floor of auction-site  "${site.name}" (${site.floor}): ${bid.adjusted}`);
+                                this.log(`Ignoring bid: Adjusted bid is lower than floor of auction-site  "${site.name}" (${site.floor}): ${adjustedBid.adjusted}`);
                             }
                             return valid;
                         }
-                        this.stderr.write(`Ignoring bid: Unauthorized ad-unit for auction: "${bid?.unit?bid.unit:bidder?.toString()}"`);
+                        this.log(`Ignoring bid: Unauthorized ad-unit for auction: "${adjustedBid?.unit?adjustedBid.unit:bidder?.toString()}"`);
                         return false;
                     }
-                    this.stderr.write(`Ignoring bid: Unauthorized bidder for auction-site "${site.name}": "${bidder?.name?bidder.name:bidder?.toString()}"`);
+                    this.log(`Ignoring bid: Unauthorized bidder for auction-site "${site.name}": "${bidder?.name?bidder.name:bidder?.toString()}"`);
                     return false;
                 }
-                this.stderr.write(`Ignoring bid: Unkown bidder: "${bid?.bidder?bid.bidder:bidder}"`);
+                this.log(`Ignoring bid: Unkown bidder: "${adjustedBid?.bidder?adjustedBid.bidder:bidder}"`);
                 return false;
             }
         }
-        this.stderr.write(`Ignoring bid: Unkown site: "${site?.name?site.name:site}"`);
+        this.log(`Ignoring bid: Unkown site: "${site?.name?site.name:site}"`);
         return false;
+    }
+    /** Only write warnings to stderr when explicitly asked for */
+    log(msg:string) {
+        if (Auctions.warn.invalidBids) {
+            this.stderr.write(msg);
+        }
     }
 }
 export type AdUnit = "banner"|"sidebar";
@@ -165,6 +177,8 @@ export interface Bid  {
     "unit": AdUnit;
     /** i.e. `55` */
     "bid": number;
+}
+export interface AdjustedBid extends Bid {
     /** The adjusted bid based on configuration */
-    adjusted?:number;
+    adjusted:number;
 }

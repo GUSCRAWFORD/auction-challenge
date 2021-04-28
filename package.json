@@ -6,6 +6,9 @@
   "repository": "https://github.com/GUSCRAWFORD/auction-challenge.git",
   "author": "Gus Crawford <crawford.gus@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": "12"
+  },
   "scripts": {
     "evaluation:prep": "(ls /path && echo \"Symbolic link path already exists\") || (echo \"Creating symbolic link '/path' to '`pwd`/path'\" && ln -s `pwd`/path /path)",
     "evaluation:build": "docker build -t challenge .",

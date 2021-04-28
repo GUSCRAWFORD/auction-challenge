@@ -25,8 +25,7 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
 
     beforeEach(()=>auctionsService = new Auctions({} as any, {write:jest.fn(out=>out)} as any, expectedConfig));
     it ('finds the highest valid bidder for each ad unit, after applying the adjustment factor.', ()=>{
-        auctionsService = new Auctions({} as any, {write:jest.fn(out=>/*out*/console.warn(out))} as any, expectedConfig)
-        
+        auctionsService = new Auctions({} as any, {write:jest.fn(out=>/*out*/console.warn(out))} as any, expectedConfig) 
         expect(
             auctionsService.process({
                 "site": "houseofcheese.com",
@@ -62,6 +61,51 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
             },
         ]);
     });
+    it('never compares the adjusted value vs a non adjusted values of two bids', ()=>{
+        auctionsService = new Auctions({} as any, {write:jest.fn(out=>/*out*/console.warn(out))} as any, {
+            "sites": [
+                {
+                    "name": "houseofcheese.com",
+                    "bidders": ["AUCT", "BIDD"],
+                    "floor": 1
+                }
+            ],
+            "bidders": [
+                {
+                    "name": "AUCT",
+                    "adjustment": -0.5
+                },
+                {
+                    "name": "BIDD",
+                    "adjustment": 0
+                }
+            ]
+        });
+        expect(
+            auctionsService.process({
+                "site": "houseofcheese.com",
+                "units": ["banner", "sidebar"],
+                "bids": [
+                    {
+                        "bidder": "AUCT",
+                        "unit": "banner",
+                        "bid": 60
+                    },
+                    {
+                        "bidder": "BIDD",
+                        "unit": "banner",
+                        "bid": 40
+                    }
+                ]
+            })
+        ).toEqual([
+            {
+                "bidder": "BIDD",
+                "unit": "banner",
+                "bid": 40
+            }
+        ]);
+    })
     it('makes negative adjustments', async ()=>{
         expect(
             auctionsService.adjust(
@@ -247,7 +291,6 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
                     "adjusted": 30
                 }
             )).toBe(false);
-
             const adjusted = auctionsService.adjust(
                     {
                         "name": "AUCT",
@@ -290,6 +333,21 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
                     }
                 )
             )).toBe(false);
+
+            expect(auctionsService.validateBid(
+                {
+                    "name": "houseofcheese.com",
+                    "bidders": ["AUCT","BIDD"],
+                    "floor": 32
+                },
+                ["sidebar"],
+                {
+                    "bidder": "AUCT",
+                    "unit": "sidebar",
+                    "bid": 35,
+                    "adjusted": 32
+                }
+            )).toBe(true);
         });
     });
     describe('returns empty list of bids for an invalid auction', ()=>{
