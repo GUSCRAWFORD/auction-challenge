@@ -134,3 +134,85 @@ Green-lights remaining initial test set
 ---
 
 ## ⏱ (~440m) ~ 7 Hours
+
+---
+
+## Revision 2
+
+> A few minor hiccups getting it running.
+>
+> 1. [TSC was not being installed](#tsc-not-installing) within the docker image. As a result no “dist” directory was being compiled. I fixed this and got it to run successfully.
+> 2. Verbosity of NPM log level was breaking the auction check. I won’t hold this against the candidate. --silent attribute fixed the console output.
+> 3. Application writing some event information to console that broke some tests. Easy enough to comment out. Again I won’t hold this against the candidate, commenting out logs easy enough to do.
+>
+> As far as the solution itself is concerned…
+> 1. Initially only 2/7 test suites pass
+> 2. Fixed bid flooring by changing an operator from “>” to “>=”. At this point I got 3/7 tests to pass
+> 3. Bid adjustments were also failing. Although the adjustment is being calculated correctly there were two problems preventing the tests from passing. First the logic comparing bids to find the highest winning bid was comparing the adjusted value vs non adjusted values of two bids. When it should only be concerned with comparing both adjusted values. After attempting to fix this I noticed that the adjusted value property was being deleted before it could be used in subsequent compares. I fixed both of these and got 4/7 tests to pass.
+> 4. Invalid bids are still being included in the results, even though the winning bids are at least sorted correctly. No bid filtering is present
+> 5. Casting to any to get around undefined errors is a bit hacky.
+
+### TSC not Installing
+
+This is the effect of running npm install on my host system; I would expect the docker image to have installed _typescript_ and other dev-dependencies at this point in the image-building:
+
+```sh
+gus@GUS-PC:~/test-auction-challenge/auction-challenge$ npm install
+npm WARN deprecated resolve-url@0.2.1: https://github.com/lydell/resolve-url#deprecated
+npm WARN deprecated urix@0.1.0: Please see https://github.com/lydell/urix#deprecated
+npm WARN deprecated request-promise-native@1.0.9: request-promise-native has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142
+npm WARN deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm WARN deprecated har-validator@5.1.5: this library is no longer supported
+npm WARN rm not removing /home/gus/test-auction-challenge/auction-challenge/node_modules/.bin/uuid as it wasn't installed by /home/gus/test-auction-challenge/auction-challenge/node_modules/uuid
+npm WARN rm not removing /home/gus/test-auction-challenge/auction-challenge/node_modules/.bin/semver as it wasn't installed by /home/gus/test-auction-challenge/auction-challenge/node_modules/semver
+
+> @guscrawford/auction-challenge@0.0.1 postinstall /home/gus/test-auction-challenge/auction-challenge
+> rimraf ./dist && tsc && jest
+
+ PASS  src/start-up.spec.ts
+ PASS  src/index.spec.ts
+  ● Console
+
+    console.info
+      [[{"bidder":"AUCT","unit":"banner","bid":35},{"bidder":"BIDD","unit":"sidebar","bid":60}]]
+
+      at Object.stdout.write.jest.fn.str (src/index.spec.ts:29:17)
+
+ PASS  src/auctions.spec.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        1.181 s, estimated 3 s
+Ran all test suites.
+npm notice created a lockfile as package-lock.json. You should commit this file.
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@^2.1.2 (node_modules/jest-haste-map/node_modules/fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@2.3.2: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+npm WARN jest-config@26.6.3 requires a peer of ts-node@>=9.0.0 but none is installed. You must install peer dependencies yourself.
+npm WARN jsdom@16.5.3 requires a peer of canvas@^2.5.0 but none is installed. You must install peer dependencies yourself.
+npm WARN ws@7.4.5 requires a peer of bufferutil@^4.0.1 but none is installed. You must install peer dependencies yourself.
+npm WARN ws@7.4.5 requires a peer of utf-8-validate@^5.0.2 but none is installed. You must install peer dependencies yourself.
+
+added 43 packages from 23 contributors, removed 55 packages, updated 485 packages and audited 531 packages in 28.993s
+found 0 vulnerabilities
+```
+
+### Solution Issues
+
+#### [Presumption] Between 2 and 3 of 7 Test Suites Pass
+
+You are referring to end-to-end tests you guys have written _and not_ the unit-tests I included.
+
+1. There are 3 suites and 15 tests
+   1. The last submission I gave had all tests passing
+2. Having to fix the bid-flooring logic greatly disappoints me personally; I should lose extra points for having coded the _right solution_ if you look at commit `038b2c70f2b6dd9d909a9d3f0fe1c994a7ea8703` and then _kind of needlessly changing this_ in a mad-freak-out of alterations rather early during revision and before starting work.
+
+
+#### Bid adjustments were also failing...
+> Although the adjustment is being calculated correctly there were two problems preventing the tests from passing. First the logic comparing bids to find the highest winning bid was comparing the adjusted value vs non adjusted values of two bids. When it should only be concerned with comparing both adjusted values. After attempting to fix this I noticed that the adjusted value property was being deleted before it could be used in subsequent compares. I fixed both of these and got 4/7 tests to pass.
+
+1. "The logic ... to find the highest winning bid was comparing the adjusted value vs non adjusted values ..."
+   - I added a breaking test based on that description 
+2. I fixed both of these and got 4/7 tests to pass.
+   - Other possible e2e tests I'm not considering:
+     - I noticed reordering of properties etc.
