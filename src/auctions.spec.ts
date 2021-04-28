@@ -105,6 +105,19 @@ describe('Gus\'s Auction Challenge Auction Behavior', ()=>{
                 "bid": 40
             }
         ]);
+    });
+    it('reports bids\'s properties in order: bidder, bid, unit', ()=>{
+        expect(JSON.stringify(
+            auctionsService.reportBid({
+                unit: "banner",
+                bidder:"any",
+                bid: 0
+            })
+        )).toBe(JSON.stringify({
+            bidder:"any",
+            bid: 0,
+            unit: "banner"
+        }));
     })
     it('makes negative adjustments', async ()=>{
         expect(

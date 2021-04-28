@@ -42,7 +42,7 @@ describe('Gus\'s Auction Challenge Tests', ()=>{
     
     await startUpService.run(stdin, stdout, stderr);
 
-    expect(JSON.parse(actual)).toEqual(expectedOutput)
+    expect(actual).toMatch(JSON.stringify(expectedOutput));
   });
 });
 
