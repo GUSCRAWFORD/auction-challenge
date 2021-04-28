@@ -69,9 +69,12 @@ export class Auctions {
     process(auction:Auction) {
         const highestValidBidPerAdUnit :{
             /** Index of ad-units */
-            [key:string]:AdjustedBid;
+            [key:string]:{
+                adjusted:number;
+                reported:Bid
+            };
         } = {};
-        const validBids = auction.bids.map(
+        auction.bids.forEach(
             bid=>{
                 const adjustedBid = this.adjust(this.bidders[bid.bidder], bid);
                 if (
@@ -84,16 +87,22 @@ export class Auctions {
                     const highestValidBidForAdUnit = highestValidBidPerAdUnit[bid.unit];
                     if (
                         !highestValidBidForAdUnit
-                        || adjustedBid.adjusted > adjustedBid.adjusted
+                        || adjustedBid.adjusted > highestValidBidPerAdUnit[bid.unit].adjusted
                     ) {
-                        highestValidBidPerAdUnit[bid.unit] = adjustedBid;
-                        return bid;
+                        highestValidBidPerAdUnit[bid.unit] = {adjusted:adjustedBid.adjusted, reported:this.reportBid(bid)};
                     }
                 }
             }
-        ).filter(bid=>bid);
-        validBids.sort((a, b)=> (a as any).bid<(b as any).bid?-1:((a as any).bid>(b as any).bid?1:0) );
-        return validBids;
+        );
+        return Object.keys(highestValidBidPerAdUnit).map(
+            adUnit=>highestValidBidPerAdUnit[adUnit].reported
+        ).sort((a, b)=> (a as any).bid<(b as any).bid?-1:((a as any).bid>(b as any).bid?1:0) );
+    }
+    /** Return a bid with it's properties in the expected _Reporting_ order */
+    reportBid(bid:Bid&{[key:string]:any}, propertiesInOrder=["bidder", "bid", "unit"]):Bid {
+        const reportedBid:{[key:string]:any} = {};
+        propertiesInOrder.forEach(p=>reportedBid[p]=bid[p]);
+        return reportedBid as Bid;
     }
     /**
      * Apply the adjustment factor:
