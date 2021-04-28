@@ -145,7 +145,7 @@ Green-lights remaining initial test set
 > 2. Verbosity of NPM log level was breaking the auction check. I won’t hold this against the candidate. --silent attribute fixed the console output.
 > 3. Application writing some event information to console that broke some tests. Easy enough to comment out. Again I won’t hold this against the candidate, commenting out logs easy enough to do.
 >
-> As far as the solution itself is concerned…
+> [As far as the solution itself is concerned…](#solution-issues)
 > 1. Initially only 2/7 test suites pass
 > 2. Fixed bid flooring by changing an operator from “>” to “>=”. At this point I got 3/7 tests to pass
 > 3. Bid adjustments were also failing. Although the adjustment is being calculated correctly there were two problems preventing the tests from passing. First the logic comparing bids to find the highest winning bid was comparing the adjusted value vs non adjusted values of two bids. When it should only be concerned with comparing both adjusted values. After attempting to fix this I noticed that the adjusted value property was being deleted before it could be used in subsequent compares. I fixed both of these and got 4/7 tests to pass.
@@ -153,6 +153,10 @@ Green-lights remaining initial test set
 > 5. Casting to any to get around undefined errors is a bit hacky.
 
 ### TSC not Installing
+
+Ultimately; the `start` command can't add dump extra details into the stdout even to 'check for build' and do buidling so I modified the "prestart" script to be a post-install and for the start command to simply run my cli.js entrypoint (silently 🔇)
+
+Probably because there is no volume created this explains why the tsc binary-redirection-script may not be accessible in your image but I still wasn't able to replicate that behavior...
 
 This is the effect of running npm install on my host system; I would expect the docker image to have installed _typescript_ and other dev-dependencies at this point in the image-building:
 
@@ -212,7 +216,6 @@ You are referring to end-to-end tests you guys have written _and not_ the unit-t
 > Although the adjustment is being calculated correctly there were two problems preventing the tests from passing. First the logic comparing bids to find the highest winning bid was comparing the adjusted value vs non adjusted values of two bids. When it should only be concerned with comparing both adjusted values. After attempting to fix this I noticed that the adjusted value property was being deleted before it could be used in subsequent compares. I fixed both of these and got 4/7 tests to pass.
 
 1. "The logic ... to find the highest winning bid was comparing the adjusted value vs non adjusted values ..."
-   - I added a breaking test based on that description 
-2. I fixed both of these and got 4/7 tests to pass.
-   - Other possible e2e tests I'm not considering:
-     - I noticed reordering of properties etc.
+   - I added a breaking test based on that description _I realize the reviewer fixed this; perhaps I've corrected something else_
+2. ... 4/7 tests pass _What other possible e2e tests am I not considering?_
+     - I noticed reordering of properties _added / updated unit tests for this_
