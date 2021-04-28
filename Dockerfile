@@ -13,6 +13,8 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+RUN npm run build
+
 # Run the solution. Your package.json should have start script that invokes
 # your code
-CMD ["npm", "start"]
+CMD ["npm", "start", "--silent"]

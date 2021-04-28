@@ -16,7 +16,7 @@
     "start": "node ./cli",
     "postinstall": "rimraf ./dist && tsc && jest",
     "test": "jest --detectOpenHandles",
-    "prestart": "(ls ./dist && echo \"Skipping build\") || (echo \"Build not found...\" && tsc)"
+    "build":"tsc"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
